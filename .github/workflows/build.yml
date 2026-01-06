@@ -12,17 +12,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Maximize Build Space
-        uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 8192
-          temp-reserve-mb: 2048
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          build-mount-path: ${{ github.workspace }}
-          
+          path: .
+
+      - name: Clean Space Manually
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Install Dependencies
         run: |
           sudo apt update
@@ -34,7 +34,7 @@ jobs:
 
       - name: Setup Environment
         run: |
-          mkdir -p mkbootimg clang AnyKernel3 dist
+          mkdir -p ${{ github.workspace }}/mkbootimg ${{ github.workspace }}/clang ${{ github.workspace }}/AnyKernel3 ${{ github.workspace }}/dist         
           wget https://android.googlesource.com/platform/system/tools/mkbootimg/+archive/refs/heads/main.tar.gz -O mkb.tar.gz && tar -zxvf mkb.tar.gz -C mkbootimg
           wget https://github.com/GTian5418/LKM_Tools/archive/refs/heads/master.zip && unzip master.zip && mv LKM_Tools-master/*.sh ./ && chmod +x *.sh
           wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz -O clang.tar.gz && tar -zxvf clang.tar.gz -C clang
@@ -45,34 +45,23 @@ jobs:
 
       - name: Patch Kernel
         run: |
-          echo "Current Path: $(pwd)"
-          ls -R ${{ github.workspace }} | grep "defconfig"
+          ls -la ${{ github.workspace }}
           cd ${{ github.workspace }}/k
           sed -i 's/static int selinux_enforcing_boot;/static int selinux_enforcing_boot = 0;/g' security/selinux/hooks.c
           sed -i 's/selinux_enforcing_boot = enforcing ? 1 : 0;/selinux_enforcing_boot = 0;/g' security/selinux/hooks.c
           sed -i 's/#define selinux_enforcing_boot 1/#define selinux_enforcing_boot 0/g' security/selinux/hooks.c
           sed -i 's/return enforcing;/return 0;/g' security/selinux/hooks.c
-          cd ${{ github.workspace }}
           cp -f "${{ github.workspace }}/defconfig" "${{ github.workspace }}/k/arch/arm64/configs/defconfig"
 
       - name: Run Build Script
         run: |
-          chmod +x build.sh
-          sudo ./build.sh
-
+          chmod +x ${{ github.workspace }}/build.sh
+          sudo ${{ github.workspace }}/build.sh
       - name: Create Release
-        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: Build-${{ github.run_id }}
           name: Venus Kernel Build ${{ github.run_id }}
-          body: |
-            ## Venus Docker Support Kernel
-            - 自动编译完成
-            - 开启 Docker 模块支持
-            - SELinux Permissive
-          draft: false
-          prerelease: false
           files: |
             dist/*.zip
             dist/*.img
