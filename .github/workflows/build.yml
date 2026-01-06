@@ -44,11 +44,13 @@ jobs:
 
       - name: Patch Kernel
         run: |
-          sed -i 's/static int selinux_enforcing_boot;/static int selinux_enforcing_boot = 0;/g' k/security/selinux/hooks.c
-          sed -i 's/selinux_enforcing_boot = enforcing ? 1 : 0;/selinux_enforcing_boot = 0;/g' k/security/selinux/hooks.c
-          sed -i 's/#define selinux_enforcing_boot 1/#define selinux_enforcing_boot 0/g' k/security/selinux/hooks.c
-          sed -i 's/return enforcing;/return 0;/g' k/security/selinux/hooks.c
-          cp defconfig k/arch/arm64/configs/defconfig
+          cd ${{ github.workspace }}/k
+          sed -i 's/static int selinux_enforcing_boot;/static int selinux_enforcing_boot = 0;/g' security/selinux/hooks.c
+          sed -i 's/selinux_enforcing_boot = enforcing ? 1 : 0;/selinux_enforcing_boot = 0;/g' security/selinux/hooks.c
+          sed -i 's/#define selinux_enforcing_boot 1/#define selinux_enforcing_boot 0/g' security/selinux/hooks.c
+          sed -i 's/return enforcing;/return 0;/g' security/selinux/hooks.c
+          cd ${{ github.workspace }}
+          cp -f "${{ github.workspace }}/defconfig" "${{ github.workspace }}/k/arch/arm64/configs/defconfig"
 
       - name: Run Build Script
         run: |
