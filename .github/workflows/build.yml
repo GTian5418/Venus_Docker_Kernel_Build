@@ -43,6 +43,7 @@ jobs:
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/vendor_dlkm.img
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/boot.img
           wget https://github.com/GTian5418/AnyKernel3/archive/refs/heads/venus.zip -O Anykernel3.zip && unzip Anykernel3.zip && mv AnyKernel3-venus AnyKernel3
+          wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/magiskboot.zip && unzip magiskboot.zip -d magisk
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/magiskboot_alpha.zip && unzip magiskboot_alpha.zip -d magiskboot && rm -rf *.gz *.zip
       - name: Patch Kernel
         run: |
