@@ -34,15 +34,15 @@ jobs:
 
       - name: Setup Environment
         run: |
-          mkdir -p ${{ github.workspace }}/mkbootimg ${{ github.workspace }}/clang ${{ github.workspace }}/AnyKernel3 ${{ github.workspace }}/dist         
+          mkdir -p ${{ github.workspace }}/mkbootimg ${{ github.workspace }}/clang ${{ github.workspace }}/dist         
           wget https://android.googlesource.com/platform/system/tools/mkbootimg/+archive/refs/heads/main.tar.gz -O mkb.tar.gz && tar -zxvf mkb.tar.gz -C mkbootimg
           wget https://github.com/GTian5418/LKM_Tools/archive/refs/heads/master.zip && unzip master.zip && mv LKM_Tools-master/*.sh ./ && chmod +x *.sh
           wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r547379.tar.gz -O clang.tar.gz && tar -zxvf clang.tar.gz -C clang
           wget https://github.com/GTian5418/android_kernel_qcom_sm8350/archive/refs/heads/lineage-23.1.zip -O kernel.zip && unzip kernel.zip && mv android_kernel_qcom_sm8350-lineage-23.1 k
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/vendor_boot.img
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/vendor_dlkm.img
-          wget https://github.com/GTian5418/AnyKernel3/archive/refs/heads/venus.zip -O Anykernel3.zip && unzip Anykernel3.zip && rm -rf AnyKernel3 && mv AnyKernel3-venus AnyKernel3
-
+          wget https://github.com/GTian5418/AnyKernel3/archive/refs/heads/venus.zip -O Anykernel3.zip && unzip Anykernel3.zip && mv AnyKernel3-venus AnyKernel3
+          wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/magiskboot_alpha.zip && unzip magiskboot_alpha.zip -d magiskboot && rm -rf *.gz *.zip
       - name: Patch Kernel
         run: |
           ls -la ${{ github.workspace }}
