@@ -41,7 +41,7 @@ jobs:
           wget https://github.com/GTian5418/android_kernel_qcom_sm8350/archive/refs/heads/lineage-23.1.zip -O kernel.zip && unzip kernel.zip && mv android_kernel_qcom_sm8350-lineage-23.1 k
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/vendor_boot.img
           wget https://github.com/GTian5418/Venus_Docker_Kernel_Build/releases/download/los23.1/vendor_dlkm.img
-          wget https://github.com/GTian5418/AnyKernel3/archive/refs/heads/venus.zip -O Anykernel3.zip && unzip Anykernel3.zip && mv AnyKernel3-venus AnyKernel3
+          wget https://github.com/GTian5418/AnyKernel3/archive/refs/heads/venus.zip -O Anykernel3.zip && unzip Anykernel3.zip && rm -rf AnyKernel3 && mv AnyKernel3-venus AnyKernel3
 
       - name: Patch Kernel
         run: |
